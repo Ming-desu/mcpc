@@ -1,0 +1,64 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}
+  Patients
+{% endblock %}
+
+{% block content %}
+  {% include "components/header.twig" %}
+  <div class="text-end mb-4 no-print">
+    <button type="button" class="text-nowrap btn btn-secondary" onclick="window.print()">
+      <i class="las la-print"></i>
+      Print
+    </button>
+  </div>
+
+  {% for patient in patients %}
+    <table class="table table-bordered">
+      <tbody>
+        <tr style="background: #ccc">
+          <th>Patient ID</th>
+          <th>Full name</th>
+          <th>Sex</th>
+          <th>Age</th>
+          <th>Guardian</th>
+          <th>Contact number</th>
+        </tr>
+        <tr>
+          <td>{{ patient.uuid }}</td>
+          <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+          <td>{{ patient.sex }}</td>
+          <td>{{ patient.age }}</td>
+          <td>{{ patient.guardian.first_name }} {{ patient.guardian.last_name }}</td>
+          <td>{{ patient.guardian.contact_number }}</td>
+        </tr>
+        <tr style="background: #ccc">
+          <th class="text-center" colspan="6">Appointments</th>
+        </tr>
+        {% if patient.appointments|length <= 0 %}
+          <tr>
+            <td class="text-center" colspan="6">No records found</td>
+          </tr>
+        {% else %}
+          {% for appointment in patient.appointments %}
+            {% for queue in appointment.queue %}
+              <tr>
+                <td colspan="4">{{ loop.first ? appointment.date : '' }}</td>
+                <td>{{ queue.time }}</td>
+                <td>{{ queue.status }}</td>
+              </tr>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  {% endfor %}
+{% endblock %}
+
+{% block footer %}
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.print();
+    });
+  </script>
+{% endblock %}

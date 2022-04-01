@@ -1,0 +1,113 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block content %}
+  <div class="d-md-flex h-100 navbar-expand-md">
+    {% include "components/sidebar.twig" %}
+    <div class="col-12 col-md-9">
+      {% include "components/header.twig" %}
+      <main class="p-3 p-md-4">
+        <div class="row">
+          <div class="col-12 col-md-4">
+            <div class="card mb-4">
+              <div class="card-body text-end">
+                <span class="display-5 fw-bold">{{ appointment.pending_appointments ?? 0 }}</span><br>
+                <h2 class="h6 m-0 text-secondary">Pending Appointments</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card mb-4">
+              <div class="card-body text-end">
+                <span class="display-5 fw-bold">{{ appointment.queue|length ?? 0 }}</span><br>
+                <h2 class="h6 m-0 text-secondary">Total Appointments</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card mb-4">
+              <div class="card-body text-end">
+                <span class="display-5 fw-bold">{{ appointment.finished_appointments ?? 0 }}</span><br>
+                <h2 class="h6 m-0 text-secondary">Finished Appointments</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            {% include "components/notification.twig" %}
+            <div id="error"></div>
+            <div class="card">
+              <div class="card-body p-0 p-md-3">
+                <h2 class="h6 mb-4 text-secondary mt-3 ms-3 mt-md-0 ms-md-0">Appointments for today</h2>
+                <div class="table-responsive">
+                  <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th class="text-nowrap">No.</th>
+                        <th class="text-nowrap">Status</th>
+                        <th class="text-nowrap">Time</th>
+                        <th class="text-nowrap">Full name</th>
+                        <th class="text-nowrap">Guardian</th>
+                        <th class="text-nowrap">Contact number</th>
+                        <th class="text-nowrap">Email</th>
+                        <th class="text-nowrap">Patient ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for queue in appointment.get_all_queue %}
+                        <tr>
+                          <td class="text-nowrap align-middle">{{ loop.index0 + 1 }}</td>
+                          <td class="text-nowrap align-middle">
+                            {% if queue.status == 'pending' %}
+                              <button type="button" class="btn btn-sm btn-danger" onclick="updateQueue('{{ queue._id }}', 'declined', '{{ appointment.date }}')">Decline</button>
+                              <button type="button" class="btn btn-sm btn-primary" onclick="updateQueue('{{ queue._id }}', 'approved', '{{ appointment.date }}')">Approve</button>
+                            {% else %}
+                              {% set colors = {'approved': 'primary', 'declined': 'danger', 'finished': 'success'} %}
+                              <span class="badge rounded-pill bg-{{ colors[queue.status] }}">
+                                {{ queue.status|title }}                            
+                              </span>
+                            {% endif %}
+                            {% if queue.status == 'approved' %}
+                              <br>
+                              <button type="button" class="btn btn-sm btn-primary mt-2" onclick="updateQueue('{{ queue._id }}', 'finished', '{{ appointment.date }}')">Mark as done</button>
+                            {% endif %}
+                          </td>
+                          <td class="text-nowrap align-middle">{{ queue.time }}</td>
+                          <td class="text-nowrap align-middle">{{ queue.patient.full_name }}</td>
+                          <td class="text-nowrap align-middle">{{ queue.patient.guardian_full_name }}</td>
+                          <td class="text-nowrap align-middle">{{ queue.patient.guardian.contact_number ?? 'N/A' }}</td>
+                          <td class="text-nowrap align-middle">{{ queue.patient.guardian.email ?? 'N/A' }}</td>
+                          <td class="text-nowrap align-middle">{{ queue.patient._id }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  <script>
+    const updateQueue = (queue_id, status, date) => {
+      if (!confirm(`Are you sure you want to ${status.substr(0, status.length - 1)} this appointment?`)) {
+        return
+      }
+
+      axios.patch('/api/appointments/status', {
+        queue_id,
+        status,
+        date
+      })
+        .then(res => window.location.reload())
+        .catch(err => showError(err.response.data.message || 'Something went wrong. Please contact your developer.'))
+    }
+  </script>
+{% endblock %}

@@ -1,0 +1,33 @@
+<div class="col-12 col-md-3 collapse navbar-collapse align-items-start bg-white shadow-sm" id="navbar">
+  <aside class="px-3 w-100">
+    <div class="d-flex align-items-center py-4">
+      <img src="https://avatars.dicebear.com/api/initials/{{ current_user.full_name }}.svg?size=50&radius=50" alt="Profile" width="50" height="50" class="d-block me-3">
+      <span class="fw-bold">{{ current_user.full_name }}</span>    
+    </div>
+    <nav class="py-4">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a href="/admin" class="nav-link {{ active in ['/', 'dashboard'] ? 'active' : '' }}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a href="/admin/appointments" class="nav-link {{ indexOf(active, 'appointments') > -1 ? 'active' : '' }}">Appointments</a>
+        </li>
+        <li class="nav-item">
+          <a href="/admin/patients" class="nav-link {{ active in ['patients'] ? 'active' : '' }}">Patients</a>
+        </li>
+        {# <li class="nav-item">
+          <a href="/admin/feedbacks" class="nav-link {{ active in ['feedbacks'] ? 'active' : '' }}">Feedbacks</a>
+        </li> #}
+        <li class="nav-item">
+          <a href="/admin/users" class="nav-link {{ active in ['users'] ? 'active' : '' }}">Users</a>
+        </li>
+        <li class="nav-item">
+          <a href="/admin/settings" class="nav-link {{ active in ['settings'] ? 'active' : '' }}">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a href="/api/auth/logout" class="nav-link">Logout</a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+</div>

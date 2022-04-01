@@ -1,0 +1,124 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+  <div class="container-xl p-0">
+    {% include "components/client/header.twig" %}
+    <main class="mb-4">
+      <img src="/img/banner.jpg" class="mt-4 img-fluid" alt="Banner">
+      <h2 class="text-primary text-center fw-bold my-5">Our Services</h2>
+      <div class="row">
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 h-100 shadow mb-4">
+            <div class="card-body py-5">
+              <div class="d-flex justify-content-center mb-5">
+                <img src="/img/icons8-prescription-64.png" class="d-block" width="64" height="64" alt="">
+              </div>
+              <h3 class="card-title h5 text-center text-primary-100 mb-3">Medical Prescription</h3>
+              <p class="text-muted m-0 text-center">Clinic provides an advisable specific medication for individual patient</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 h-100 shadow mb-4">
+            <div class="card-body py-5">
+              <div class="d-flex justify-content-center mb-5">
+                <img src="/img/icons8-vaccine-64.png" class="d-block" width="64" height="64" alt="">            
+              </div>
+              <h3 class="card-title h5 text-center text-primary-100 mb-3">Vaccination</h3>
+              <p class="text-muted m-0 text-center">We offer vaccination for patient who has a monthly check up in the clinic.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 h-100 shadow mb-4">
+            <div class="card-body py-5">
+              <div class="d-flex justify-content-center mb-5">
+                <img src="/img/icons8-emergency-call-64.png" class="d-block" width="64" height="64" alt="">
+              </div>
+              <h3 class="card-title h5 text-center text-primary-100 mb-3">Medical Consultation</h3>
+              <p class="text-muted m-0 text-center">Clinic provides general check up of what patients health condition might be.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 h-100 shadow mb-4">
+            <div class="card-body py-5">
+              <div class="d-flex justify-content-center mb-5">
+                <img src="/img/icons8-certificate-64.png" class="d-block" width="64" height="64" alt="">            
+              </div>
+              <h3 class="card-title h5 text-center text-primary-100 mb-3">Medical Certification</h3>
+              <p class="text-muted m-0 text-center">Clinic provides medical certification for any purpose or any legal procedure.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="text-primary text-center fw-bold my-5">Contact us</h2>
+      <div class="card">
+        <div class="card-body p-5">
+          <h3 class="h4 card-title mb-5">Write us a message</h3>
+          <div id="error"></div>
+          <form class="row">
+            <div class="col-md-5">
+              <div class="form-group mb-4">
+                <label class="form-label" for="name">Name</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Your name" required>              
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-label" for="email">Email address</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Your email" required>
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div class="form-group mb-3">
+                <label class="form-label" for="message">Message</label>
+                <textarea class="form-control" name="message" id="message" rows="5" placeholder="Write your message here..." required></textarea>
+              </div>
+              <div class="text-end">
+                <button type="submit" name="submit" class="btn btn-primary">Send message</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    {% include "components/client/footer.twig" %}
+  </div>
+{% endblock %}
+
+{% block footer %}
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const form = document.querySelector('form');
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name = this.name.value;
+        const email = this.email.value;
+        const message = this.message.value;
+
+        this.submit.disabled = true;
+
+        try {
+          const response = await axios.post('/write-us', {
+            name,
+            email,
+            message
+          });
+
+          this.reset();
+          alert('Thank you for your feedback. We will reached you out soon.');
+        }
+        catch(err) {
+          showError(err.response.data.message || 'Something went wrong. Please contact the administrator.');
+        }
+
+        this.submit.disabled = false;
+      });
+    });
+  </script>
+{% endblock %}

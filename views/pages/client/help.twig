@@ -1,0 +1,41 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+  <div class="container-xl p-0">
+    {% include "components/client/header.twig" %}
+    <main class="mb-4">
+      <img src="/img/banner.jpg" class="mt-4 img-fluid" alt="Banner">
+      <h2 class="text-primary text-center fw-bold my-5">How to reserve an appointment</h2>
+      <div class="d-flex flex-column align-items-center">
+        <div class="card border-0 shadow mb-4">
+          <div class="card-body">
+            <p class="card-text m-0">To get started, kindly visit the <a href="/make-appointment">appointment's</a> page.</p>
+          </div>
+        </div>
+        <i class="las la-arrow-down fs-1 text-muted mb-4"></i>
+        <div class="card border-0 shadow mb-4">
+          <div class="card-body">
+            <p class="card-text m-0">Choose your preferred available time for your clinical visit.</p>
+          </div>
+        </div>
+        <i class="las la-arrow-down fs-1 text-muted mb-4"></i>
+        <div class="card border-0 shadow mb-4">
+          <div class="card-body">
+            <p class="card-text m-0">Fill out the fields that are required and necessary to progress your reservation such as personal information and contact details.</p>
+          </div>
+        </div>
+        <i class="las la-arrow-down fs-1 text-muted mb-4"></i>
+        <div class="card border-0 shadow mb-4">
+          <div class="card-body">
+            <p class="card-text m-0">Double check every information you provide, then submit the form. Wait for an email or text message for the confirmation of your reservation.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    {% include "components/client/footer.twig" %}
+  </div>
+{% endblock %}

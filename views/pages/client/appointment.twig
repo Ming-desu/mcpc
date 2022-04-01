@@ -1,0 +1,282 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}
+  Make Appointment
+{% endblock %}
+
+{% block content %}
+  <div class="container-xl p-0">
+    {% include "components/client/header.twig" %}
+    <main class="px-4 px-lg-0 py-4">
+      {% include "components/notification.twig" %}
+      <div id="error"></div>
+      <form action="/api/appointments/store" class="row" method="POST">
+        <div class="col-12 col-lg-6 col-xl-5">
+          <h2 class="h5 mb-4">Appointment Slots</h2>
+          <div class="card border-0 shadow mb-4">
+            <div class="card-body">
+              <h3 class="card-title h6 text-primary">Appointment time</h3>
+              <p class="text-secondary">Select a time to reserve slot which suits your preferences.</p>
+              {% set times = ['08:00AM', '08:30AM', '09:00AM', '09:30AM', '10:00AM', '10:30AM', '11:00AM', '11:30AM', '12:00NN', '12:30PM', '01:00PM', '01:30PM', '02:00PM', '02:30PM', '03:00PM', '03:30PM', '04:00PM', '04:30PM', '05:00PM'] %}
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for time in times %}
+                      <tr>
+                        <td>{{ time }}</td>
+                        <td>
+                          <span class="badge rounded-pill bg-{{ time not in appointment.booked_times ? 'success' : 'secondary' }}">{{ time not in appointment.booked_times ? 'Available' : 'Reserved' }}</span>
+                        </td>
+                        <td>
+                          {% if time not in appointment.booked_times %}
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="time" id="time-{{ loop.index0 }}" value="{{ time }}">
+                              <label class="form-check-label" for="time-{{ loop.index0 }}">
+                                Reserve
+                              </label>
+                            </div>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                <span class="fw-bold">Disclaimer: </span>Please do understand that our appointment system only secures you a clinic visit slot in advance. It does not mean that you will be able to enter the clinic or be accommodated at the exact time because we need to regulate the number of visitors inside the clinic for everyone's safety. We are doing our best to accommodate and serve our patients with compassionate care.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6 col-xl-7">
+          <h2 class="h5 mb-4">Patient Information</h2>
+          <div class="card border-0 shadow mb-4">
+            <div class="card-body">
+              <h3 class="h6 text-primary">Patient Information</h3>
+              <p class="text-secondary m-0">Provide necessary basic information about this person such as name and gender.</p>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="card-body">
+              <div class="row align-items-center mb-4">
+                <div class="col-12 col-md-3 mb-3 mb-md-0">
+                  <span class="form-label fw-bold">Patient ID</span>
+                </div>
+                <div class="col-12 col-md-9">
+                  <div class="row">
+                    <div class="col-12 col-sm-6 col-md-7">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" name="patient_id" id="patient_id" placeholder="Provide if applicable" onfocusout="fetchPatient()">
+                        <label for="patient_id" class="form-label">Provide if applicable</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row align-items-center mb-4">
+                <div class="col-12 col-md-3 mb-3 mb-md-0">
+                  <span class="form-label fw-bold">Full name</span>
+                </div>
+                <div class="col-12 col-md-9">
+                  <div class="row">
+                    <div class="col-12 col-sm-6 col-xl-4 mb-3 mb-xl-0">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="John" required>
+                        <label for="first_name" class="form-label">First name</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-xl-4 mb-3 mb-xl-0">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Doe">
+                        <label for="middle_name" class="form-label">Middle name</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-xl-4">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Smith" required>
+                        <label for="last_name" class="form-label">Last name</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row align-items-center mb-4">
+                <div class="col-12 col-md-3 mb-3 mb-md-0">
+                  <span class="form-label fw-bold">Sex</span>
+                </div>
+                <div class="col-12 col-md-9">
+                  <div class="d-flex justify-content-end">
+                    <div class="form-check me-3">
+                      <input class="form-check-input" type="radio" name="sex" id="male" value="Male" checked>
+                      <label class="form-check-label" for="male">
+                        Male
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="sex" id="female" value="Female">
+                      <label class="form-check-label" for="female">
+                        Female
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-12 col-md-3 mb-3 mb-md-0">
+                  <span class="form-label fw-bold">Birthdate</span>
+                </div>
+                <div class="col-12 col-md-9">
+                  <div class="row">
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group">
+                        <input type="date" name="birthdate" name="birthdate" id="birthdate" class="form-control" required>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="card-body">
+              <h3 class="h6 text-primary">Guardian Information</h3>
+              <p class="text-secondary m-0">Fill out the following details, if applicable.</p>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="card-body">
+              <div class="row align-items-center mb-4">
+                <div class="col-12 col-md-3 mb-3 mb-md-0">
+                  <span class="form-label fw-bold">Full name</span>
+                </div>
+                <div class="col-12 col-md-9">
+                  <div class="row">
+                    <div class="col-12 col-sm-6 mb-3 mb-sm-0">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" name="g_first_name" id="g_first_name" placeholder="John">
+                        <label for="g_first_name" class="form-label">First name</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" name="g_last_name" id="g_last_name" placeholder="Smith">
+                        <label for="g_last_name" class="form-label">Last name</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-12 col-md-3 mb-3 mb-md-0">
+                  <span class="fw-bold form-label">Contact details</span>
+                </div>
+                <div class="col-12 col-md-9">
+                  <div class="row">
+                    <div class="col-12 col-sm-6 mb-3 mb-sm-0">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" name="contact_number" id="contact_number" placeholder="Contact number">
+                        <label for="text" class="form-label">Contact number</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 d-none">
+                      <div class="form-floating">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Email address">
+                        <label for="email" class="form-label">Email address</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-end">
+            <button type="submit" name="submit" class="btn btn-primary">Reserve Appointment</button>
+          </div>
+        </div>
+      </form>
+    </main>
+    {% include "components/client/footer.twig" %}
+  </div>
+{% endblock %}
+
+{% block footer %}
+  <script>
+    const form = document.querySelector('form')
+
+    form?.addEventListener('submit', function(e) {
+      e.preventDefault()
+
+      const patient_id = this.patient_id.value
+      const first_name = this.first_name.value
+      const middle_name = this.middle_name.value
+      const last_name = this.last_name.value
+      const sex = this.querySelector('[name="sex"]:checked').value
+      const birthdate = this.birthdate.value
+      const guardian_first_name = this.g_first_name.value
+      const guardian_last_name = this.g_last_name.value
+      const contact_number = this.contact_number.value
+      const email = this.email.value
+      const time = this.querySelector('[name="time"]:checked')?.value
+
+      if (!time) {
+        return showError('Please choose your desired time.')
+      }
+
+      if (!first_name || !last_name || !sex || !birthdate) {
+        return showError('Please fill up all the required fields.')
+      } 
+
+      if ((guardian_first_name && !guardian_last_name) || (guardian_last_name && !guardian_first_name)) {
+        return showError('Please provide necessary information for the guardian.')
+      }
+
+      this.submit.disabled = true
+
+      axios.post(this.action, {
+        patient_id,
+        first_name,
+        middle_name,
+        last_name,
+        sex,
+        birthdate,
+        guardian: {
+          first_name: guardian_first_name,
+          last_name: guardian_last_name,
+          contact_number,
+          email
+        },
+        time
+      })
+        .then(res => window.location.reload())
+        .catch(err => showError(err.response.data.message || 'Something went wrong. Please contact your developer.'))
+        .then(() => this.submit.disabled = false)
+    })
+
+    const updateFields = sub => {
+      if (!form) {
+        return
+      }
+
+      form.first_name.value = sub.first_name
+      form.middle_name.value = sub.middle_name
+      form.last_name.value = sub.last_name
+      form.querySelector(`[name="sex"][value="${sub.sex}"]`).checked = true
+      form.birthdate.value = sub.formatted_birthdate
+      form.g_first_name.value = sub.guardian.first_name
+      form.g_last_name.value = sub.guardian.last_name
+      form.contact_number.value = sub.guardian.contact_number
+      form.email.value = sub.guardian.email
+    }
+
+    const fetchPatient = function() {
+      const patient_id = document.getElementById('patient_id').value
+
+      axios.get(`/api/patients/${patient_id}?uuid=true`)
+        .then(res => updateFields(res.data.sub))
+    }
+  </script>
+{% endblock %}

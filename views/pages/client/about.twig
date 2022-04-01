@@ -1,0 +1,35 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+  <div class="container-xl p-0">
+    {% include "components/client/header.twig" %}
+    <main class="mb-4">
+      <img src="/img/banner.jpg" class="mt-4 img-fluid" alt="Banner">
+      <h2 class="text-primary text-center fw-bold my-5">About the Clinic</h2>
+      <div class="d-flex flex-column align-items-center">
+        <div class="col-6 mb-5">
+          <p class="card-text text-center m-0">
+            Marol Cerda Pediatric Clinic caters children from birth upto 18 years of age.<br>
+            Clinic is located at 2nd floor of Cerda Materny Clinic M. Basa St. San Pablo City, Laguna<br>
+            Clinic Hours: Monday - Saturday 10:00AM - 1:00PM<br>
+            1 Guardian / Parent is allowed to accompany patient at the clinic.<br>
+            Strictly by appointment only. 
+          </p>
+        </div>
+      </div>
+      <h2 class="text-primary text-center fw-bold mb-5">About the Doctor</h2>
+      <div class="d-flex flex-column align-items-center">
+        <div class="col-6 mb-4 text-center">
+          <img src="/img/doctor.jpg" class="img-fluid mb-3" alt="Marol Cerda">
+          <h3 class="h5 card-title">Christlyn Marol C. Cerda, M.D.</h3>
+          <p class="card-text text-muted">Graduate of Medical Degree at University of Sto. Tomas<br>Trained at Cardinal Santos Center Department of Pediatrics</p>
+        </div>
+      </div>
+    </main>
+    {% include "components/client/footer.twig" %}
+  </div>
+{% endblock %}
